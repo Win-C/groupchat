@@ -28,7 +28,9 @@ ws.onmessage = function (evt) {
 
   if (msg.type === "note") {
     item = $(`<li><i>${msg.text}</i></li>`);
-  } else if (msg.type === "get-joke"){
+  } else if (msg.type === "joke"){
+    item = $(`<li><b>${msg.name}: </b>${msg.text}</li>`);
+  } else if (msg.type === "members") {
     item = $(`<li><b>${msg.name}: </b>${msg.text}</li>`);
   } else if (msg.type === "chat") {
     item = $(`<li><b>${msg.name}: </b>${msg.text}</li>`);
@@ -62,7 +64,10 @@ $("form").submit(function (evt) {
   const text = $("#m").val(); 
 
   if (text === "/joke"){
-    let data = { type: "get-joke", text: "joke", name: "server" };
+    let data = { type: "joke", text: "joke", name: "server" };
+    ws.send(JSON.stringify(data));
+  } else if (text === "/members"){
+    let data = { type: "members", text: "members", name: "server" };
     ws.send(JSON.stringify(data));
   } else {
     let data = { type: "chat", text };

@@ -65,6 +65,21 @@ class Room {
       member.send(JSON.stringify(data));
     }
   }
+
+   /**  Get a list of all members in a room (this.name). 
+   * Return a string
+   * */
+
+  getMembers() {
+    let members = [];
+    for (let member of this.members) {
+      members.push(member.name);
+    }
+    members = members.join(", ");
+    console.log("members", members);
+    return `In ${this.name}: ${members}`;
+  }
+
 }
 
 module.exports = Room;

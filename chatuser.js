@@ -62,17 +62,30 @@ class ChatUser {
     });
   }
 
-  /** Handle a get-joke: broadcast to user.
+  /** Handle a get joke: broadcast to user.
    *
    * @param text {string} joke to send
    * */
 
-  handleGetJoke(joke) {
+  handleGetJoke() {
     // QUESTION: should we be using this.send or this._send?
     this.send(JSON.stringify({
       name: "server",
-      type: "get-joke",
+      type: "joke",
       text: JOKE,
+    }));
+  }
+
+  /** Handle get members: broadcast to user.
+   *
+   * @param text {string} member list string to send
+   * */
+
+  handleGetMembers() {
+    this.send(JSON.stringify({
+      name: "server",
+      type: "members",
+      text: this.room.getMembers(),
     }));
   }
 
@@ -82,7 +95,7 @@ class ChatUser {
    *
    * @example<code>
    * - {type: "join", name: username} : join
-   * - {type: "get-joke", text: joke, name: "Server" } : joke
+   * - {type: "joke", text: joke, name: "Server" } : joke
    * - {type: "chat", text: msg }     : chat
    * </code>
    */
@@ -90,8 +103,9 @@ class ChatUser {
   handleMessage(jsonData) {
     let msg = JSON.parse(jsonData);
     if (msg.type === "join") this.handleJoin(msg.name);
-    else if (msg.type === "get-joke") this.handleGetJoke(msg.text);
+    else if (msg.type === "joke") this.handleGetJoke();
     else if (msg.type === "chat") this.handleChat(msg.text);
+    else if (msg.type === "members") this.handleGetMembers();
     else throw new Error(`bad message: ${msg.type}`);
   }
 
