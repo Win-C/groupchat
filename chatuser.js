@@ -3,6 +3,8 @@
 // Room is an abstraction of a chat channel
 const Room = require("./Room");
 
+const JOKE = "Today, my son asked 'Can I have a book mark?' and I burst into tears. 11 years old and he still doesn't know my name is Brian.";
+
 /** ChatUser is a individual connection from client -> server to chat. */
 
 class ChatUser {
@@ -60,20 +62,35 @@ class ChatUser {
     });
   }
 
+  /** Handle a get-joke: broadcast to user.
+   *
+   * @param text {string} joke to send
+   * */
+
+  handleGetJoke(joke) {
+    // QUESTION: should we be using this.send or this._send?
+    this.send(JSON.stringify({
+      name: "server",
+      type: "get-joke",
+      text: JOKE,
+    }));
+  }
+
   /** Handle messages from client:
    *
    * @param jsonData {string} raw message data
    *
    * @example<code>
    * - {type: "join", name: username} : join
+   * - {type: "get-joke", text: joke, name: "Server" } : joke
    * - {type: "chat", text: msg }     : chat
    * </code>
    */
 
   handleMessage(jsonData) {
     let msg = JSON.parse(jsonData);
-
     if (msg.type === "join") this.handleJoin(msg.name);
+    else if (msg.type === "get-joke") this.handleGetJoke(msg.text);
     else if (msg.type === "chat") this.handleChat(msg.text);
     else throw new Error(`bad message: ${msg.type}`);
   }
