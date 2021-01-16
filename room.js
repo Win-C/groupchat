@@ -76,7 +76,6 @@ class Room {
       members.push(member.name);
     }
     members = members.join(", ");
-    console.log("members", members);
     return `In ${this.name}: ${members}`;
   }
 
